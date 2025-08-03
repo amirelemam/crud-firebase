@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import axios from 'axios';
+import { usersApi } from '../api/users';
 
 const useCreateUserModal = (onUserCreated) => {
   const [isOpen, setIsOpen] = useState(false);
@@ -9,9 +9,9 @@ const useCreateUserModal = (onUserCreated) => {
   });
   const [errors, setErrors] = useState({});
   const [loading, setLoading] = useState(false);
+  const [apiError, setApiError] = useState(null);
 
-  // Mock API base URL - replace with your actual backend URL
-  const API_BASE_URL = 'http://localhost:5001/rentredi-backend/us-central1/api';
+
 
   const validateForm = () => {
     const newErrors = {};
@@ -56,21 +56,13 @@ const useCreateUserModal = (onUserCreated) => {
     setLoading(true);
 
     try {
-      const response = await axios.post(`${API_BASE_URL}/users`, formData);
-      onUserCreated(response.data);
+      setApiError(null);
+      const newUser = await usersApi.create(formData);
+      onUserCreated(newUser);
       closeModal();
     } catch (error) {
       console.error('Error creating user:', error);
-      // For demo purposes, simulate success
-      const newUser = {
-        id: Date.now(),
-        ...formData,
-        latitude: 0,
-        longitude: 0,
-        timezone: 'UTC',
-      };
-      onUserCreated(newUser);
-      closeModal();
+      setApiError(error.response?.data?.message || error.message || 'Failed to create user');
     } finally {
       setLoading(false);
     }
@@ -87,6 +79,7 @@ const useCreateUserModal = (onUserCreated) => {
     setFormData({ name: '', zipCode: '' });
     setErrors({});
     setLoading(false);
+    setApiError(null);
   };
 
   return {
@@ -94,6 +87,7 @@ const useCreateUserModal = (onUserCreated) => {
     formData,
     errors,
     loading,
+    apiError,
     openModal,
     closeModal,
     handleSubmit,

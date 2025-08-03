@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from 'react';
-import axios from 'axios';
 import '../features/users/UserManagement.css';
 import Header from '../layout/Header';
 import UsersTable from '../features/users/UsersTable';
 import CreateUserModal from '../features/users/CreateUserModal';
-import EditUserModal from '../features/users/EditUserModal'; 
+import EditUserModal from '../features/users/EditUserModal';
 import DeleteConfirmationModal from '../features/users/DeleteConfirmationModal';
+import { usersApi } from '../../api/users';
 import {
   useCreateUserModal,
   useEditUserModal,
@@ -33,9 +33,6 @@ const UserManagement = () => {
     setUsers(users.filter((user) => user.id !== userId));
   });
 
-  // Mock API base URL - replace with your actual backend URL
-  const API_BASE_URL = 'http://localhost:5001/rentredi-backend/us-central1/api';
-
   useEffect(() => {
     fetchUsers();
   }, []);
@@ -43,37 +40,12 @@ const UserManagement = () => {
   const fetchUsers = async () => {
     try {
       setLoading(true);
-      const response = await axios.get(`${API_BASE_URL}/users`);
-      setUsers(response.data);
+      const users = await usersApi.getAll();
+      setUsers(users);
     } catch (error) {
       console.error('Error fetching users:', error);
-      // For demo purposes, using mock data
-      setUsers([
-        {
-          id: 1,
-          name: 'John Doe',
-          zipCode: '12345',
-          latitude: 40.7128,
-          longitude: -74.006,
-          timezone: 'America/New_York',
-        },
-        {
-          id: 2,
-          name: 'Jane Smith',
-          zipCode: '54321',
-          latitude: 34.0522,
-          longitude: -118.2437,
-          timezone: 'America/Los_Angeles',
-        },
-        {
-          id: 3,
-          name: 'Bob Johnson',
-          zipCode: '90210',
-          latitude: 34.1016,
-          longitude: -118.3267,
-          timezone: 'America/Los_Angeles',
-        },
-      ]);
+      // Fallback to empty array if API fails
+      setUsers([]);
     } finally {
       setLoading(false);
     }
@@ -121,6 +93,7 @@ const UserManagement = () => {
         isOpen={createUserModal.isOpen}
         formData={createUserModal.formData}
         errors={createUserModal.errors}
+        apiError={createUserModal.apiError}
         onClose={createUserModal.closeModal}
         onSubmit={createUserModal.handleSubmit}
         onChange={createUserModal.handleInputChange}
@@ -130,6 +103,7 @@ const UserManagement = () => {
         isOpen={editUserModal.isOpen}
         formData={editUserModal.formData}
         errors={editUserModal.errors}
+        apiError={editUserModal.apiError}
         onClose={editUserModal.closeModal}
         onSubmit={editUserModal.handleSubmit}
         onChange={editUserModal.handleInputChange}
@@ -138,6 +112,7 @@ const UserManagement = () => {
       <DeleteConfirmationModal
         isOpen={deleteConfirmationModal.isOpen}
         selectedUser={deleteConfirmationModal.selectedUser}
+        apiError={deleteConfirmationModal.apiError}
         onClose={deleteConfirmationModal.closeModal}
         onConfirm={deleteConfirmationModal.handleConfirmDelete}
       />

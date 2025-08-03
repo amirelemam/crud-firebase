@@ -35,14 +35,14 @@ const UsersTable = ({
               Zip Code{' '}
               {sortField === 'zipCode' && (sortDirection === 'asc' ? '↑' : '↓')}
             </th>
-            <th onClick={() => onSort('latitude')}>
+            <th onClick={() => onSort('lat')}>
               Latitude{' '}
-              {sortField === 'latitude' &&
+              {sortField === 'lat' &&
                 (sortDirection === 'asc' ? '↑' : '↓')}
             </th>
-            <th onClick={() => onSort('longitude')}>
+            <th onClick={() => onSort('lon')}>
               Longitude{' '}
-              {sortField === 'longitude' &&
+              {sortField === 'lon' &&
                 (sortDirection === 'asc' ? '↑' : '↓')}
             </th>
             <th onClick={() => onSort('timezone')}>
@@ -58,8 +58,8 @@ const UsersTable = ({
             <tr key={user.id}>
               <td>{user.name}</td>
               <td>{user.zipCode}</td>
-              <td>{user.latitude}</td>
-              <td>{user.longitude}</td>
+              <td>{user.lat}</td>
+              <td>{user.lon}</td>
               <td>{user.timezone}</td>
               <td>
                 <TableActions user={user} onEdit={onEdit} onDelete={onDelete} />

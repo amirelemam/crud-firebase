@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import axios from 'axios';
+import { usersApi } from '../api/users';
 
 const useEditUserModal = (onUserUpdated) => {
   const [isOpen, setIsOpen] = useState(false);
@@ -10,9 +10,9 @@ const useEditUserModal = (onUserUpdated) => {
   });
   const [errors, setErrors] = useState({});
   const [loading, setLoading] = useState(false);
+  const [apiError, setApiError] = useState(null);
 
-  // Mock API base URL - replace with your actual backend URL
-  const API_BASE_URL = 'http://localhost:5001/rentredi-backend/us-central1/api';
+
 
   const validateForm = () => {
     const newErrors = {};
@@ -57,18 +57,13 @@ const useEditUserModal = (onUserUpdated) => {
     setLoading(true);
 
     try {
-      const response = await axios.put(
-        `${API_BASE_URL}/users/${selectedUser.id}`,
-        formData,
-      );
-      onUserUpdated(response.data);
+      setApiError(null);
+      const updatedUser = await usersApi.update(selectedUser.id, formData);
+      onUserUpdated(updatedUser);
       closeModal();
     } catch (error) {
       console.error('Error updating user:', error);
-      // For demo purposes, simulate success
-      const updatedUser = { ...selectedUser, ...formData };
-      onUserUpdated(updatedUser);
-      closeModal();
+      setApiError(error.response?.data?.message || error.message || 'Failed to update user');
     } finally {
       setLoading(false);
     }
@@ -90,6 +85,7 @@ const useEditUserModal = (onUserUpdated) => {
     setFormData({ name: '', zipCode: '' });
     setErrors({});
     setLoading(false);
+    setApiError(null);
   };
 
   return {
@@ -98,6 +94,7 @@ const useEditUserModal = (onUserUpdated) => {
     formData,
     errors,
     loading,
+    apiError,
     openModal,
     closeModal,
     handleSubmit,

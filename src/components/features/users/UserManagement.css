@@ -132,6 +132,9 @@
   justify-content: center;
   z-index: 1000;
   backdrop-filter: blur(4px);
+  padding: 20px;
+  box-sizing: border-box;
+  animation: fadeIn 0.2s ease;
 }
 
 .modal {
@@ -142,6 +145,7 @@
   max-width: 500px;
   max-height: 90vh;
   overflow-y: auto;
+  animation: slideIn 0.3s ease;
 }
 
 .modal-header {
@@ -208,13 +212,6 @@
 
 .form-group input.error {
   border-color: #e74c3c;
-}
-
-.error-message {
-  color: #e74c3c;
-  font-size: 12px;
-  margin-top: 4px;
-  display: block;
 }
 
 .modal-actions {
@@ -319,7 +316,6 @@
 
   .modal {
     width: 95%;
-    margin: 20px;
   }
 
   .modal-header,
@@ -327,15 +323,6 @@
   .modal-content {
     padding: 16px;
   }
-}
-
-/* Animation for modal */
-.modal-overlay {
-  animation: fadeIn 0.2s ease;
-}
-
-.modal {
-  animation: slideIn 0.3s ease;
 }
 
 @keyframes fadeIn {

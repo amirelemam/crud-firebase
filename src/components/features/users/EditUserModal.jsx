@@ -1,13 +1,15 @@
 import React from 'react';
 import { FiX } from 'react-icons/fi';
+import ErrorMessage from '../../ui/ErrorMessage';
 
 const EditUserModal = ({
   isOpen,
   formData,
   errors,
+  apiError,
   onClose,
   onSubmit,
-  onChange
+  onChange,
 }) => {
   if (!isOpen) return null;
 
@@ -16,14 +18,12 @@ const EditUserModal = ({
       <div className="modal">
         <div className="modal-header">
           <h2>Edit User</h2>
-          <button
-            className="close-btn"
-            onClick={onClose}
-          >
+          <button className="close-btn" onClick={onClose}>
             <FiX />
           </button>
         </div>
         <form onSubmit={onSubmit}>
+          <ErrorMessage error={apiError} onClose={() => onClose()} />
           <div className="form-group">
             <label htmlFor="name">Name *</label>
             <input
@@ -34,7 +34,9 @@ const EditUserModal = ({
               onChange={onChange}
               className={errors.name ? 'error' : ''}
             />
-            {errors.name && <span className="error-message">{errors.name}</span>}
+            {errors.name && (
+              <span className="error-message">{errors.name}</span>
+            )}
           </div>
           <div className="form-group">
             <label htmlFor="zipCode">Zip Code *</label>
@@ -47,15 +49,15 @@ const EditUserModal = ({
               maxLength="5"
               className={errors.zipCode ? 'error' : ''}
             />
-            {errors.zipCode && <span className="error-message">{errors.zipCode}</span>}
+            {errors.zipCode && (
+              <span className="error-message">{errors.zipCode}</span>
+            )}
           </div>
           <div className="modal-actions">
             <button type="button" onClick={onClose}>
               Cancel
             </button>
-            <button type="submit">
-              Update
-            </button>
+            <button type="submit">Update</button>
           </div>
         </form>
       </div>
@@ -63,4 +65,4 @@ const EditUserModal = ({
   );
 };
 
-export default EditUserModal; 
+export default EditUserModal;

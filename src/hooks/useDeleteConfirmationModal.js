@@ -1,13 +1,13 @@
 import { useState } from 'react';
-import axios from 'axios';
+import { usersApi } from '../api/users';
 
 const useDeleteConfirmationModal = (onUserDeleted) => {
   const [isOpen, setIsOpen] = useState(false);
   const [selectedUser, setSelectedUser] = useState(null);
   const [loading, setLoading] = useState(false);
+  const [apiError, setApiError] = useState(null);
 
-  // Mock API base URL - replace with your actual backend URL
-  const API_BASE_URL = 'http://localhost:5001/rentredi-backend/us-central1/api';
+
 
   const handleConfirmDelete = async () => {
     if (!selectedUser) return;
@@ -15,14 +15,13 @@ const useDeleteConfirmationModal = (onUserDeleted) => {
     setLoading(true);
 
     try {
-      await axios.delete(`${API_BASE_URL}/users/${selectedUser.id}`);
+      setApiError(null);
+      await usersApi.delete(selectedUser.id);
       onUserDeleted(selectedUser.id);
       closeModal();
     } catch (error) {
       console.error('Error deleting user:', error);
-      // For demo purposes, simulate success
-      onUserDeleted(selectedUser.id);
-      closeModal();
+      setApiError(error.response?.data?.message || error.message || 'Failed to delete user');
     } finally {
       setLoading(false);
     }
@@ -37,12 +36,14 @@ const useDeleteConfirmationModal = (onUserDeleted) => {
     setIsOpen(false);
     setSelectedUser(null);
     setLoading(false);
+    setApiError(null);
   };
 
   return {
     isOpen,
     selectedUser,
     loading,
+    apiError,
     openModal,
     closeModal,
     handleConfirmDelete,

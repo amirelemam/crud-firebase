@@ -1,13 +1,15 @@
 import React from 'react';
 import { FiX } from 'react-icons/fi';
+import ErrorMessage from '../../ui/ErrorMessage';
 
 const CreateUserModal = ({
   isOpen,
   formData,
   errors,
+  apiError,
   onClose,
   onSubmit,
-  onChange
+  onChange,
 }) => {
   if (!isOpen) return null;
 
@@ -16,14 +18,12 @@ const CreateUserModal = ({
       <div className="modal">
         <div className="modal-header">
           <h2>Create User</h2>
-          <button
-            className="close-btn"
-            onClick={onClose}
-          >
+          <button className="close-btn" onClick={onClose}>
             <FiX />
           </button>
         </div>
         <form onSubmit={onSubmit}>
+          <ErrorMessage error={apiError} onClose={() => onClose()} />
           <div className="form-group">
             <label htmlFor="name">Name *</label>
             <input
@@ -34,7 +34,9 @@ const CreateUserModal = ({
               onChange={onChange}
               className={errors.name ? 'error' : ''}
             />
-            {errors.name && <span className="error-message">{errors.name}</span>}
+            {errors.name && (
+              <span className="error-message">{errors.name}</span>
+            )}
           </div>
           <div className="form-group">
             <label htmlFor="zipCode">Zip Code *</label>
@@ -47,15 +49,15 @@ const CreateUserModal = ({
               maxLength="5"
               className={errors.zipCode ? 'error' : ''}
             />
-            {errors.zipCode && <span className="error-message">{errors.zipCode}</span>}
+            {errors.zipCode && (
+              <span className="error-message">{errors.zipCode}</span>
+            )}
           </div>
           <div className="modal-actions">
             <button type="button" onClick={onClose}>
               Cancel
             </button>
-            <button type="submit">
-              Create
-            </button>
+            <button type="submit">Create</button>
           </div>
         </form>
       </div>
@@ -63,4 +65,4 @@ const CreateUserModal = ({
   );
 };
 
-export default CreateUserModal; 
+export default CreateUserModal;
