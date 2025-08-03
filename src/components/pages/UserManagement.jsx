@@ -1,0 +1,148 @@
+import React, { useState, useEffect } from 'react';
+import axios from 'axios';
+import '../features/users/UserManagement.css';
+import Header from '../layout/Header';
+import UsersTable from '../features/users/UsersTable';
+import CreateUserModal from '../features/users/CreateUserModal';
+import EditUserModal from '../features/users/EditUserModal'; 
+import DeleteConfirmationModal from '../features/users/DeleteConfirmationModal';
+import {
+  useCreateUserModal,
+  useEditUserModal,
+  useDeleteConfirmationModal,
+} from '../../hooks';
+
+const UserManagement = () => {
+  const [users, setUsers] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [sortField, setSortField] = useState('name');
+  const [sortDirection, setSortDirection] = useState('asc');
+
+  // Custom hooks for modal management
+  const createUserModal = useCreateUserModal((newUser) => {
+    setUsers([...users, newUser]);
+  });
+
+  const editUserModal = useEditUserModal((updatedUser) => {
+    setUsers(
+      users.map((user) => (user.id === updatedUser.id ? updatedUser : user)),
+    );
+  });
+
+  const deleteConfirmationModal = useDeleteConfirmationModal((userId) => {
+    setUsers(users.filter((user) => user.id !== userId));
+  });
+
+  // Mock API base URL - replace with your actual backend URL
+  const API_BASE_URL = 'http://localhost:5001/rentredi-backend/us-central1/api';
+
+  useEffect(() => {
+    fetchUsers();
+  }, []);
+
+  const fetchUsers = async () => {
+    try {
+      setLoading(true);
+      const response = await axios.get(`${API_BASE_URL}/users`);
+      setUsers(response.data);
+    } catch (error) {
+      console.error('Error fetching users:', error);
+      // For demo purposes, using mock data
+      setUsers([
+        {
+          id: 1,
+          name: 'John Doe',
+          zipCode: '12345',
+          latitude: 40.7128,
+          longitude: -74.006,
+          timezone: 'America/New_York',
+        },
+        {
+          id: 2,
+          name: 'Jane Smith',
+          zipCode: '54321',
+          latitude: 34.0522,
+          longitude: -118.2437,
+          timezone: 'America/Los_Angeles',
+        },
+        {
+          id: 3,
+          name: 'Bob Johnson',
+          zipCode: '90210',
+          latitude: 34.1016,
+          longitude: -118.3267,
+          timezone: 'America/Los_Angeles',
+        },
+      ]);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleSort = (field) => {
+    if (sortField === field) {
+      setSortDirection(sortDirection === 'asc' ? 'desc' : 'asc');
+    } else {
+      setSortField(field);
+      setSortDirection('asc');
+    }
+  };
+
+  const handleCreate = () => {
+    createUserModal.openModal();
+  };
+
+  const handleEdit = (user) => {
+    editUserModal.openModal(user);
+  };
+
+  const handleDelete = (user) => {
+    deleteConfirmationModal.openModal(user);
+  };
+
+  if (loading) {
+    return <div className="loading">Loading users...</div>;
+  }
+
+  return (
+    <div className="user-management">
+      <Header onCreateClick={handleCreate} />
+
+      <UsersTable
+        users={users}
+        sortField={sortField}
+        sortDirection={sortDirection}
+        onSort={handleSort}
+        onEdit={handleEdit}
+        onDelete={handleDelete}
+      />
+
+      <CreateUserModal
+        isOpen={createUserModal.isOpen}
+        formData={createUserModal.formData}
+        errors={createUserModal.errors}
+        onClose={createUserModal.closeModal}
+        onSubmit={createUserModal.handleSubmit}
+        onChange={createUserModal.handleInputChange}
+      />
+
+      <EditUserModal
+        isOpen={editUserModal.isOpen}
+        formData={editUserModal.formData}
+        errors={editUserModal.errors}
+        onClose={editUserModal.closeModal}
+        onSubmit={editUserModal.handleSubmit}
+        onChange={editUserModal.handleInputChange}
+      />
+
+      <DeleteConfirmationModal
+        isOpen={deleteConfirmationModal.isOpen}
+        selectedUser={deleteConfirmationModal.selectedUser}
+        onClose={deleteConfirmationModal.closeModal}
+        onConfirm={deleteConfirmationModal.handleConfirmDelete}
+      />
+    </div>
+  );
+};
+
+export default UserManagement;
