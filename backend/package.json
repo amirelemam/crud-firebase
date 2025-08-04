@@ -1,0 +1,25 @@
+{
+  "name": "crud-firebase-backend",
+  "version": "1.0.0",
+  "description": "Firebase Cloud Functions CRUD project",
+  "scripts": {
+    "serve": "firebase emulators:start --only functions",
+    "shell": "firebase functions:shell",
+    "start": "npm run shell",
+    "deploy": "firebase deploy --only functions",
+    "logs": "firebase functions:log",
+    "test": "jest"
+  },
+  "engines": {
+    "node": "20"
+  },
+  "devDependencies": {
+    "firebase-functions-test": "^3.1.0",
+    "jest": "^29.7.0",
+    "supertest": "^7.1.4"
+  },
+  "private": true,
+  "dependencies": {
+    "dotenv": "^17.2.1"
+  }
+}

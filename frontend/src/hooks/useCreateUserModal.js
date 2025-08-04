@@ -62,7 +62,21 @@ const useCreateUserModal = (onUserCreated) => {
       closeModal();
     } catch (error) {
       console.error('Error creating user:', error);
-      setApiError(error.response?.data?.message || error.message || 'Failed to create user');
+      console.error('Error response:', error.response?.data);
+      console.error('Error status:', error.response?.status);
+      
+      // Handle different error response formats
+      let errorMessage = 'Failed to create user';
+      
+      if (error.response?.data?.message) {
+        errorMessage = error.response.data.message;
+      } else if (error.response?.data?.error?.message) {
+        errorMessage = error.response.data.error.message;
+      } else if (error.message) {
+        errorMessage = error.message;
+      }
+      
+      setApiError(errorMessage);
     } finally {
       setLoading(false);
     }

@@ -20,13 +20,13 @@ const UserManagement = () => {
 
   // Custom hooks for modal management
   const createUserModal = useCreateUserModal((newUser) => {
-    setUsers([...users, newUser]);
+    // Refetch users to ensure consistent data format
+    fetchUsers();
   });
 
   const editUserModal = useEditUserModal((updatedUser) => {
-    setUsers(
-      users.map((user) => (user.id === updatedUser.id ? updatedUser : user)),
-    );
+    // Refetch users to ensure consistent data format
+    fetchUsers();
   });
 
   const deleteConfirmationModal = useDeleteConfirmationModal((userId) => {

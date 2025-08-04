@@ -1,70 +1,272 @@
-# Getting Started with Create React App
+# CRUD User with Firebase
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+A full-stack application with a Firebase backend API and React frontend for user management.
 
-## Available Scripts
+## Project Structure
 
-In the project directory, you can run:
+```
+crud-firebase/
+├── backend/          # Firebase Functions API
+│   ├── functions/    # Cloud Functions
+│   ├── config/       # Firebase configuration
+│   └── db/          # Database services
+└── frontend/        # React application
+    ├── src/         # React source code
+    └── public/      # Static assets
+```
 
-### `npm start`
+## Features
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+- User creation with form validation
+- Real-time user listing
+- Update and delete operations
+- Error handling and user feedback
+- Responsive design with modern UI
+- US zip code validation (5 digits)
+- Automatic latitude/longitude fetching
+- UTC offset timezone
+- Error handling for invalid zip codes
+- Location data refresh on zip code updates
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+## Assumptions
 
-### `npm test`
+- **Multiple Users**: Multiple users can have the same name and zip code
+- **Unique Identification**: A unique key is required to differentiate users
+- **Geographic Scope**: Country is limited to USA
+- **Timezone Storage**: Timezone is stored as UTC offset in seconds (not displayed to users)
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+## Requirements
 
-### `npm run build`
+- Install Node.js v22
+- Install Firebase CLI:
+  ```bash
+  npm install -g firebase-tools
+  ```
+- OpenWeather API key [check out](https://openweathermap.org/appid)
+- Firebase Realtime Database URL
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+### Firebase Setup
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+1. Create a Firebase project
+2. Enable Realtime Database
+3. Download service account key
+4. Configure database rules for security
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+## Backend
 
-### `npm run eject`
+### Setup
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
+1. Navigate to the backend directory:
 
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+   ```bash
+   cd backend
+   ```
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
+2. Install dependencies:
 
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
+   ```bash
+   npm install
+   cd functions
+   npm install
+   ```
 
-## Learn More
+3. Set up environment variables:
+   Create a `.env` file in the `functions` directory with:
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+   ```
+   OPENWEATHER_API_KEY=your_openweather_api_key
+   DATABASE_URL=your_firebase_realtime_database_url
+   ```
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+4. Set up Firebase credentials:
 
-### Code Splitting
+   - Download your Firebase service account key as `serviceAccountKey.json`
+   - Place it in the `config` directory
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
+5. Login to Firebase:
 
-### Analyzing the Bundle Size
+   ```bash
+   firebase login
+   ```
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
+6. Initialize your Firebase project:
+   ```bash
+   firebase use --add
+   ```
 
-### Making a Progressive Web App
+### Environment Variables
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
+#### Backend (Firebase Functions)
 
-### Advanced Configuration
+### Development
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
+#### Running Tests
+
+```bash
+cd backend/functions
+npm test
+```
+
+#### Linting
+
+```bash
+cd backend/functions
+npm run lint
+```
+
+#### Available Scripts
+
+```bash
+cd backend
+# Start emulators
+npm run serve
+
+# Deploy to Firebase
+npm run deploy
+
+# View logs
+npm run logs
+```
+
+### Local Development
+
+1. Start the Firebase emulators from the backend directory:
+
+   ```bash
+   cd backend
+   npm run serve
+   ```
+
+2. The API will be available at:
+   - Local: `http://localhost:5001/{project-name}/{gcp-region}/api`
+   - Emulator UI: `http://localhost:4000`
 
 ### Deployment
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
+Deploy the Firebase Functions:
 
-### `npm run build` fails to minify
+```bash
+cd backend
+npm run deploy
+```
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+### Security Features
+
+- **CORS**: Configured for cross-origin requests
+- **Rate Limiting**: Prevents abuse with request limiting
+- **Input Validation**: Comprehensive validation using Zod schemas
+- **Error Sanitization**: Error messages don't expose sensitive information
+- **Helmet**: Security headers for Express app
+
+### API Documentation
+
+For detailed API documentation, including endpoints, data models, and usage examples, see [API_DOCUMENTATION.md](backend/API_DOCUMENTATION.md).
+
+## Frontend
+
+### Setup
+
+1. Navigate to the frontend directory:
+
+   ```bash
+   cd frontend
+   ```
+
+2. Install dependencies:
+
+   ```bash
+   npm install
+   ```
+
+3. Configure API endpoints:
+   Update the API base URL in `src/api/index.js` to point to your backend:
+   - Local development: `http://localhost:5001/{project-name}/{gcp-region}/api`
+   - Production: `https://{gcp-region}-{project-name}.cloudfunctions.net/api`
+
+### Development
+
+#### Available Scripts
+
+```bash
+cd frontend
+# Start development server
+npm start
+
+# Build for production
+npm run build
+
+# Run tests
+npm test
+
+# Eject (not recommended)
+npm run eject
+```
+
+#### Features
+
+- React-based user interface
+- User management with CRUD operations
+- Modal dialogs for create/edit/delete operations
+- Responsive design
+- Error handling and loading states
+- Form validation
+
+### Local Development
+
+1. Start the React development server from the frontend directory:
+
+   ```bash
+   cd frontend
+   npm start
+   ```
+
+2. The React app will be available at:
+   - Local: `http://localhost:3000`
+
+### Deployment
+
+Build and deploy the React app:
+
+```bash
+cd frontend
+npm run build
+```
+
+You can deploy the `build` folder to any static hosting service like:
+
+- Firebase Hosting
+- Netlify
+- Vercel
+- GitHub Pages
+
+## Local Development (Both Together)
+
+1. Start the backend (in one terminal):
+
+   ```bash
+   cd backend
+   npm run serve
+   ```
+
+2. Start the frontend (in another terminal):
+
+   ```bash
+   cd frontend
+   npm start
+   ```
+
+3. Access the application:
+   - Frontend: `http://localhost:3000`
+   - Backend API: `http://localhost:5001/{project-name}/{gcp-region}/api`
+   - Emulator UI: `http://localhost:4000`
+
+## Next Steps
+
+- [ ] Add unit tests for both backend and frontend
+- [ ] Add end-to-end testing
+- [ ] Implement user authentication
+- [ ] Add user roles and permissions
+- [ ] Support more geographic regions
+- [ ] Add pagination for large datasets
+- [ ] Implement caching for location data
+- [ ] Update Cloud Function to 2nd Generation

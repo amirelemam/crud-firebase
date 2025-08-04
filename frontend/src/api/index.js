@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 // API Configuration
-export const API_BASE_URL = process.env.REACT_APP_API_BASE_URL || 'http://127.0.0.1:5001/rentredi-take-home/us-central1/api';
+export const API_BASE_URL = process.env.REACT_APP_API_BASE_URL;
 
 // Create axios instance with default config
 const apiClient = axios.create({
