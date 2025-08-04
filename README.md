@@ -1,6 +1,6 @@
 # CRUD User with Firebase
 
-A full-stack application with a Firebase backend API and React frontend for user management.
+A full-stack application with a Firebase backend API, React frontend for user management and Firestore for database.
 
 ## Project Structure
 
@@ -33,7 +33,7 @@ crud-firebase/
 - **Multiple Users**: Multiple users can have the same name and zip code
 - **Unique Identification**: A unique key is required to differentiate users
 - **Geographic Scope**: Country is limited to USA
-- **Timezone Storage**: Timezone is stored as UTC offset in seconds (not displayed to users)
+- **Timezone Storage**: Timezone is stored as UTC offset in seconds, but displayed to users as UTC offset in hours.
 
 ## Requirements
 
@@ -43,14 +43,14 @@ crud-firebase/
   npm install -g firebase-tools
   ```
 - OpenWeather API key [check out](https://openweathermap.org/appid)
-- Firebase Realtime Database URL
 
 ### Firebase Setup
 
 1. Create a Firebase project
-2. Enable Realtime Database
+2. Enable Firestore Database
 3. Download service account key
 4. Configure database rules for security
+5. Enable Firestore API
 
 ## Backend
 
@@ -75,7 +75,6 @@ crud-firebase/
 
    ```
    OPENWEATHER_API_KEY=your_openweather_api_key
-   DATABASE_URL=your_firebase_realtime_database_url
    ```
 
 4. Set up Firebase credentials:
@@ -93,10 +92,6 @@ crud-firebase/
    ```bash
    firebase use --add
    ```
-
-### Environment Variables
-
-#### Backend (Firebase Functions)
 
 ### Development
 
@@ -153,7 +148,6 @@ npm run deploy
 ### Security Features
 
 - **CORS**: Configured for cross-origin requests
-- **Rate Limiting**: Prevents abuse with request limiting
 - **Input Validation**: Comprehensive validation using Zod schemas
 - **Error Sanitization**: Error messages don't expose sensitive information
 - **Helmet**: Security headers for Express app
