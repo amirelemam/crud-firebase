@@ -264,3 +264,4 @@ You can deploy the `build` folder to any static hosting service like:
 - [ ] Add pagination for large datasets
 - [ ] Implement caching for location data
 - [ ] Update Cloud Function to 2nd Generation
+- [ ] Add Redux for state management
