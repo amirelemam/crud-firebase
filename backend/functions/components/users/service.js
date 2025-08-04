@@ -35,7 +35,7 @@ const create = async ({ name, zipCode }) => {
 
 const update = async (id, updateFields) => {
   try {
-    const existingUser = await readDataOnce(`users/${id}`);
+    const existingUser = await readDataOnce("users", id);
     if (!existingUser) {
       throw new NotFoundError(`User with id ${id} not found`);
     }
@@ -48,7 +48,7 @@ const update = async (id, updateFields) => {
       data = { ...data, ...location };
     }
 
-    const updatedUser = await updateData(`users/${id}`, data);
+    const updatedUser = await updateData("users", id, data);
 
     // Format timezone if it exists
     if (updatedUser.timezone !== undefined) {
@@ -64,12 +64,12 @@ const update = async (id, updateFields) => {
 const remove = async (id) => {
   try {
     // Check if user exists
-    const existingUser = await readDataOnce(`users/${id}`);
+    const existingUser = await readDataOnce("users", id);
     if (!existingUser) {
       throw new NotFoundError(`User with id ${id} not found`);
     }
 
-    await deleteData(`users/${id}`);
+    await deleteData("users", id);
   } catch (error) {
     throwError(error, "Failed to delete user");
   }
@@ -77,7 +77,7 @@ const remove = async (id) => {
 
 const getById = async ({ id }) => {
   try {
-    const user = await readDataOnce(`users/${id}`);
+    const user = await readDataOnce("users", id);
 
     if (!user) {
       throw new NotFoundError(`User with id ${id} not found`);
@@ -99,12 +99,7 @@ const getAll = async () => {
     const users = await readDataOnce("users");
 
     if (users) {
-      return Object.keys(users).map(key => {
-        const user = {
-          id: key,
-          ...users[key]
-        };
-
+      return Object.values(users).map(user => {
         // Format timezone if it exists
         if (user.timezone !== undefined) {
           user.timezone = formatTimezone(user.timezone);

@@ -1,10 +1,10 @@
 const db = require("./index");
 
-async function updateData(path, data) {
+async function updateData(collection, docId, data) {
   try {
-    await db.ref(path).update(data);
+    await db.collection(collection).doc(docId).update(data);
     return {
-      id: path.split("/").pop(),
+      id: docId,
       ...data
     }
   } catch (error) {
@@ -13,34 +13,49 @@ async function updateData(path, data) {
   }
 }
 
-async function pushData(path, data) {
+async function pushData(collection, data) {
   try {
-    const newRef = await db.ref(path).push(data);
+    const docRef = await db.collection(collection).add(data);
     return {
-      id: newRef.key,
+      id: docRef.id,
       ...data
     }
   } catch (error) {
     console.error("Error pushing data:", error);
+    throw error;
   }
 }
 
-async function readDataOnce(path) {
+async function readDataOnce(collection, docId = null) {
   try {
-    const snapshot = await db.ref(path).once("value");
-    const data = snapshot.val();
-
-    return data;
+    if (docId) {
+      // Read single document
+      const doc = await db.collection(collection).doc(docId).get();
+      if (!doc.exists) {
+        return null;
+      }
+      return { id: doc.id, ...doc.data() };
+    } else {
+      // Read all documents in collection
+      const snapshot = await db.collection(collection).get();
+      const data = {};
+      snapshot.forEach(doc => {
+        data[doc.id] = { id: doc.id, ...doc.data() };
+      });
+      return data;
+    }
   } catch (error) {
     console.error("Error reading data:", error);
+    throw error;
   }
 }
 
-async function deleteData(path) {
+async function deleteData(collection, docId) {
   try {
-    await db.ref(path).remove();
+    await db.collection(collection).doc(docId).delete();
   } catch (error) {
     console.error("Error deleting data:", error);
+    throw error;
   }
 }
 
