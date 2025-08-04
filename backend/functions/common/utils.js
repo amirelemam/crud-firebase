@@ -1,4 +1,4 @@
-const { UnprocessableEntityError, AppError } = require("./errors");
+const { AppError, BadRequestError } = require("./errors");
 
 const validateSchema = (schema) =>
   async (req, res, next) => {
@@ -11,7 +11,7 @@ const validateSchema = (schema) =>
       next();
     } catch (error) {
       const errorMessage = error.errors ? error.errors.map(err => err.message).join(", ") : "Validation failed";
-      const validationError = new UnprocessableEntityError(errorMessage);
+      const validationError = new BadRequestError(errorMessage);
       next(validationError);
     }
   };
